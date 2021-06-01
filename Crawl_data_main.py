@@ -37,15 +37,22 @@ list_content = []
 
 for link in tqdm(links):
     dict_save = {}
+    # add source link
     news = requests.get('https://vietnamnet.vn' + link, headers=headers)
     soup = BeautifulSoup(news.content, "html.parser")
+
+    #find Category
     mydivs = soup.find_all("div", {"class": "top-cate-head-subcate-child"})
     Category = [link.find('a').attrs["title"] for link in mydivs]
     list_Category.append(Category)
+    dict_save["Category"] = str(Category).strip('[]')
+
+    #find title
     titles = soup.find("h1", class_="title f-22 c-3e")
     list_titles.append(titles.text)
-    dict_save["Category"] = str(Category).strip('[]')
     dict_save["Title"] = titles.text
+
+    #find content
     body = soup.find("div", id="ArticleContent")
     content = ""
     try:
